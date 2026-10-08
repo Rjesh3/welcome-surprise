@@ -168,6 +168,28 @@ button, input {
     display: block;
 }
 
+.surprise-options {
+    display: grid;
+    gap: 14px;
+}
+
+.video-screen {
+    width: min(92vw, 960px);
+}
+
+.video-screen video {
+    display: block;
+    width: 100%;
+    max-height: 72vh;
+    border-radius: 20px;
+    background: #000;
+}
+
+.video-error {
+    margin-top: 14px;
+    color: rgba(255,255,255,0.8);
+}
+
 /* =========================
    NAME SCREEN
 ========================= */
@@ -815,6 +837,39 @@ input:focus {
     </section>
 
 
+    <!-- SURPRISE OPTIONS -->
+    <section class="screen" id="optionsScreen">
+
+        <h1 class="title">
+            Choose your <span class="gradient">Surprise</span>
+        </h1>
+
+        <div class="surprise-options">
+            <button class="next-btn" id="smallSurpriseBtn">
+                Small Surprise ✨
+            </button>
+            <button class="next-btn" id="bigSurpriseBtn">
+                Big Surprise 🎬
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- BIG SURPRISE VIDEO -->
+    <section class="screen video-screen" id="videoScreen">
+
+        <video id="surpriseVideo" controls autoplay playsinline preload="auto">
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support video playback.
+        </video>
+        <p class="video-error" id="videoError" role="status" hidden>
+            The video could not play. Use the video controls to try again.
+        </p>
+
+    </section>
+
+
     <!-- WELCOME SCREEN -->
     <section class="screen" id="welcomeScreen">
 
@@ -887,12 +942,18 @@ input:focus {
 ========================= */
 
 const nameScreen = document.getElementById("nameScreen");
+const optionsScreen = document.getElementById("optionsScreen");
+const videoScreen = document.getElementById("videoScreen");
 const welcomeScreen = document.getElementById("welcomeScreen");
 const giftScreen = document.getElementById("giftScreen");
 const finalScreen = document.getElementById("finalScreen");
 
 const nameInput = document.getElementById("nameInput");
 const nextBtn = document.getElementById("nextBtn");
+const smallSurpriseBtn = document.getElementById("smallSurpriseBtn");
+const bigSurpriseBtn = document.getElementById("bigSurpriseBtn");
+const surpriseVideo = document.getElementById("surpriseVideo");
+const videoError = document.getElementById("videoError");
 
 const welcomeText = document.getElementById("welcomeText");
 const welcomeName = document.getElementById("welcomeName");
@@ -973,6 +1034,8 @@ function switchScreen(current, next) {
 ========================= */
 
 nextBtn.addEventListener("click", startExperience);
+smallSurpriseBtn.addEventListener("click", startSmallSurprise);
+bigSurpriseBtn.addEventListener("click", startBigSurprise);
 
 nameInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
@@ -996,7 +1059,11 @@ function startExperience() {
 
     welcomeName.textContent = userName;
 
-    switchScreen(nameScreen, welcomeScreen);
+    switchScreen(nameScreen, optionsScreen);
+}
+
+function startSmallSurprise() {
+    switchScreen(optionsScreen, welcomeScreen);
 
     setTimeout(() => {
         welcomeText.classList.add("show");
@@ -1006,6 +1073,18 @@ function startExperience() {
         switchScreen(welcomeScreen, giftScreen);
     }, 2500);
 }
+
+function startBigSurprise() {
+    switchScreen(optionsScreen, videoScreen);
+
+    surpriseVideo.play().catch(() => {
+        videoError.hidden = false;
+    });
+}
+
+surpriseVideo.addEventListener("error", function () {
+    videoError.hidden = false;
+});
 
 
 /* =========================
